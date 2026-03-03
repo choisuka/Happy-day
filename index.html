@@ -701,7 +701,7 @@ function showTab(name){
   // art 탭 열릴 때 이미지 로드 (display:none → block 후 src 설정)
   if(name==='art'){
     const img=document.getElementById('art-img-el');
-    if(img && img.dataset.src && !img.src){img.src=img.dataset.src;}
+    if(img && img.dataset.src){img.src=img.dataset.src;}
   }
 }
 
