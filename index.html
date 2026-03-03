@@ -166,8 +166,8 @@
   .tab-btn:hover { background: var(--P); color: #fff; }
 
   /* ── CONTENT PANELS ── */
-  .panel { display: none; }
-  .panel.active { display: block; }
+  .panel { display: block; max-height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
+  .panel.active { max-height: 9999px; opacity: 1; pointer-events: auto; }
 
   .content-card {
     background: var(--card);
@@ -653,8 +653,8 @@ function renderAll(){
   // Poem
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
-  // Art — data-src로 저장, 탭 열릴 때 src 설정 (display:none 문제 완전 회피)
-  $('panel-art').innerHTML = `<img class="art-img" id="art-img-el" data-src="${art.img}" src="" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+  // Art
+  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
   // Places
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
@@ -699,10 +699,6 @@ function showTab(name){
     $('panel-'+t).classList.toggle('active',t===name);
   });
   // art 탭 열릴 때 이미지 로드 (display:none → block 후 src 설정)
-  if(name==='art'){
-    const img=document.getElementById('art-img-el');
-    if(img && img.dataset.src){img.src=img.dataset.src;}
-  }
 }
 
 // ── Loading / Error ───────────────────────

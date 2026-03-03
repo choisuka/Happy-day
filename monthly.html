@@ -139,8 +139,8 @@
   }
   .tab-btn.active, .tab-btn:hover { background: var(--P); color: #fff; }
 
-  .panel { display: none; }
-  .panel.active { display: block; }
+  .panel { display: block; max-height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
+  .panel.active { max-height: 9999px; opacity: 1; pointer-events: auto; }
   .content-card { background: var(--card); backdrop-filter: blur(10px); border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 3px 18px rgba(0,0,0,.08); }
 
   /* Music */
@@ -673,7 +673,7 @@ function renderContent(cond, dateStr) {
 
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
-  $('panel-art').innerHTML = `<img class="art-img" id="art-img-el" data-src="${art.img}" src="" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
 
@@ -711,7 +711,6 @@ function showTab(name) {
   ['music','poem','art','places','books','act'].forEach(t => {
     $('panel-' + t).classList.toggle('active', t === name);
   });
-  if(name==='art'){const img=document.getElementById('art-img-el');if(img&&img.dataset.src)img.src=img.dataset.src;}
 }
 
 function showLoading() {
