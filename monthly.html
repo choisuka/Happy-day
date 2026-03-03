@@ -3,19 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>행복한 하루</title>
+<title>행복한 하루 — 16일 예보</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --card: rgba(255,255,255,.88); --radius: 18px; }
 
-  :root {
-    --warm: #f59e0b;
-    --rose: #e11d48;
-    --teal: #0d9488;
-    --card: rgba(255,255,255,.88);
-    --radius: 18px;
-  }
-
-  /* ── Weather Themes ── */
   body.clear        { --A:#fef3c7; --B:#fed7aa; --P:#d97706; --T:#78350f; }
   body.partlyCloudy { --A:#dbeafe; --B:#e0f2fe; --P:#0284c7; --T:#0c4a6e; }
   body.cloudy       { --A:#e2e8f0; --B:#cbd5e1; --P:#475569; --T:#1e293b; }
@@ -35,147 +27,121 @@
   }
 
   /* ── HEADER ── */
-  .site-header {
-    text-align: center;
-    padding: 2.5rem 1rem 1.5rem;
-    position: relative;
+  .site-header { text-align: center; padding: 2rem 1rem 1rem; }
+  .site-logo   { font-size: 1.9rem; font-weight: 900; color: var(--P); margin-bottom: .15rem; }
+  .site-sub    { font-size: .83rem; opacity: .65; margin-bottom: .7rem; }
+  .date-box    {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: var(--card); backdrop-filter: blur(10px);
+    border-radius: 14px; padding: .5rem 1.3rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08); margin-bottom: .6rem;
   }
-  .site-logo {
-    font-size: 2rem;
-    font-weight: 900;
-    letter-spacing: -.02em;
-    color: var(--P, #d97706);
-    margin-bottom: .2rem;
+  .date-box .today-label { font-size: .75rem; opacity: .55; }
+  .date-box .today-date  { font-size: .95rem; font-weight: 700; color: var(--P); }
+
+  .nav-links { display: flex; justify-content: center; gap: .5rem; flex-wrap: wrap; }
+  .nav-link  {
+    display: inline-block; padding: .32rem .8rem;
+    background: var(--card); border-radius: 999px;
+    color: var(--P); text-decoration: none; font-size: .82rem; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: opacity .2s;
   }
-  .site-sub {
-    font-size: .85rem;
-    opacity: .65;
-    margin-bottom: 1rem;
-  }
-  .date-box {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--card);
-    backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: .6rem 1.4rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,.08);
-  }
-  .date-box .greeting { font-size: .8rem; opacity: .6; }
-  .date-box .date     { font-size: 1rem; font-weight: 700; color: var(--P); }
-  .date-box .clock    { font-size: .85rem; opacity: .55; }
+  .nav-link:hover { opacity: .8; }
 
   /* ── LOCATION BAR ── */
-  .loc-bar {
-    display: flex;
-    justify-content: center;
-    gap: .5rem;
-    padding: .6rem 1rem;
-    flex-wrap: wrap;
-  }
+  .loc-bar { display: flex; justify-content: center; gap: .5rem; padding: .5rem 1rem; flex-wrap: wrap; }
   .loc-bar input {
-    padding: .45rem .9rem;
-    border: 1.5px solid var(--P, #d97706);
-    border-radius: 8px;
-    font-size: .88rem;
-    background: var(--card);
-    color: var(--T);
-    width: 175px;
+    padding: .45rem .9rem; border: 1.5px solid var(--P);
+    border-radius: 8px; font-size: .88rem; background: var(--card); color: var(--T); width: 175px;
   }
   .loc-btn {
-    padding: .45rem .9rem;
-    background: var(--P, #d97706);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .88rem;
-    font-weight: 600;
-    transition: opacity .2s;
+    padding: .45rem .9rem; background: var(--P); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-size: .88rem;
+    font-weight: 600; transition: opacity .2s;
   }
   .loc-btn:hover { opacity: .85; }
 
   /* ── MAIN ── */
-  main { max-width: 700px; margin: 0 auto; padding: .5rem 1rem 4rem; }
-
+  main { max-width: 740px; margin: 0 auto; padding: .5rem 1rem 4rem; }
   #loading { text-align: center; padding: 2.5rem; font-size: 1rem; color: var(--P); }
-  #err-box  { text-align: center; padding: 1.5rem; }
-  .err-btn  { margin-top: .6rem; padding: .4rem .9rem; background: var(--rose); color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+  #err-box { text-align: center; padding: 1.5rem; }
+  .err-btn { margin-top: .6rem; padding: .4rem .9rem; background: #e11d48; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
 
-  /* ── WEATHER BANNER ── */
-  .w-banner {
+  /* ── FORECAST GRID ── */
+  .forecast-section { margin-bottom: 1.2rem; }
+  .section-title {
+    font-size: .75rem; font-weight: 700; opacity: .45;
+    text-transform: uppercase; letter-spacing: .07em; margin-bottom: .5rem;
+  }
+  .forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: .4rem;
+  }
+  @media (max-width: 620px) { .forecast-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .day-card {
     background: var(--card);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius);
-    padding: 1.2rem 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,.1);
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: .55rem .3rem;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all .18s;
+    min-width: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
   }
-  .w-big   { font-size: 3.8rem; flex-shrink: 0; }
-  .w-loc   { font-size: .82rem; opacity: .6; margin-bottom: .15rem; }
-  .w-temp  { font-size: 1.9rem; font-weight: 800; }
-  .w-cond  { font-size: .95rem; font-weight: 600; }
-  .w-meta  { display: flex; gap: .8rem; font-size: .8rem; margin-top: .35rem; opacity: .6; }
+  .day-card:hover  { border-color: var(--P); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .day-card.sel    { background: var(--P); color: #fff; border-color: var(--P); }
+  .day-card.today-card .day-wd { color: var(--P); font-weight: 800; }
+  .day-card.sel    .day-wd     { color: rgba(255,255,255,.75); }
 
-  /* ── QUOTE BOX ── */
-  .quote-box {
-    background: var(--P, #d97706);
-    color: #fff;
-    border-radius: var(--radius);
-    padding: 1rem 1.3rem;
-    margin-bottom: 1rem;
-    font-size: .95rem;
-    font-style: italic;
-    font-weight: 500;
-    box-shadow: 0 4px 18px rgba(0,0,0,.12);
-    position: relative;
-    overflow: hidden;
+  .day-wd   { font-size: .6rem; opacity: .7; }
+  .day-dt   { font-size: .7rem; font-weight: 700; margin-bottom: .1rem; }
+  .day-ico  { font-size: 1.4rem; display: block; margin: .1rem 0; }
+  .day-tmax { font-size: .72rem; font-weight: 700; }
+  .day-tmin { font-size: .64rem; opacity: .6; }
+  .day-rain { font-size: .58rem; opacity: .55; margin-top: .05rem; }
+
+  /* ── SELECTED DAY BANNER ── */
+  .sel-banner {
+    background: var(--card); backdrop-filter: blur(12px);
+    border-radius: var(--radius); padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem; box-shadow: 0 4px 24px rgba(0,0,0,.1);
+    display: flex; align-items: center; gap: 1.2rem;
   }
-  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia, serif; }
+  .sel-big  { font-size: 3.5rem; flex-shrink: 0; }
+  .sel-date { font-size: .82rem; opacity: .6; margin-bottom: .1rem; }
+  .sel-temp { font-size: 1.7rem; font-weight: 800; }
+  .sel-cond { font-size: .9rem; font-weight: 600; }
+  .sel-meta { display: flex; gap: .8rem; font-size: .78rem; margin-top: .3rem; opacity: .6; flex-wrap: wrap; }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    background: var(--P); color: #fff; border-radius: var(--radius);
+    padding: 1rem 1.3rem; margin-bottom: 1rem;
+    font-size: .95rem; font-style: italic; font-weight: 500;
+    box-shadow: 0 4px 18px rgba(0,0,0,.12); position: relative; overflow: hidden;
+  }
+  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia,serif; }
   .quote-box .q-text { position: relative; }
   .quote-box .q-src  { display: block; font-style: normal; font-size: .78rem; opacity: .75; margin-top: .3rem; }
 
   /* ── TABS ── */
-  .tab-bar {
-    display: flex;
-    gap: .4rem;
-    overflow-x: auto;
-    padding-bottom: .3rem;
-    margin-bottom: 1rem;
-    scrollbar-width: none;
-  }
+  .tab-bar { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .3rem; margin-bottom: 1rem; scrollbar-width: none; }
   .tab-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
-    flex-shrink: 0;
-    padding: .5rem 1rem;
-    border: 1.5px solid var(--P, #d97706);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--P);
-    font-size: .85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .2s;
-    white-space: nowrap;
+    flex-shrink: 0; padding: .5rem 1rem;
+    border: 1.5px solid var(--P); border-radius: 999px;
+    background: transparent; color: var(--P);
+    font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap;
   }
-  .tab-btn.active,
-  .tab-btn:hover { background: var(--P); color: #fff; }
+  .tab-btn.active, .tab-btn:hover { background: var(--P); color: #fff; }
 
-  /* ── CONTENT PANELS ── */
   .panel { display: none; }
   .panel.active { display: block; }
-
-  .content-card {
-    background: var(--card);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius);
-    padding: 1.3rem;
-    box-shadow: 0 3px 18px rgba(0,0,0,.08);
-  }
+  .content-card { background: var(--card); backdrop-filter: blur(10px); border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 3px 18px rgba(0,0,0,.08); }
 
   /* Music */
   .music-artist { font-size: .78rem; opacity: .6; margin-bottom: .2rem; }
@@ -188,16 +154,7 @@
 
   /* Poem */
   .poem-author { font-size: .82rem; opacity: .6; margin-bottom: .6rem; }
-  .poem-body {
-    white-space: pre-line;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', serif;
-    font-size: .95rem;
-    line-height: 2.1;
-    padding: .9rem 1rem;
-    background: rgba(0,0,0,.04);
-    border-radius: 10px;
-    border-left: 4px solid var(--P, #d97706);
-  }
+  .poem-body { white-space: pre-line; font-family: 'Malgun Gothic','Apple SD Gothic Neo',serif; font-size: .95rem; line-height: 2.1; padding: .9rem 1rem; background: rgba(0,0,0,.04); border-radius: 10px; border-left: 4px solid var(--P); }
 
   /* Art */
   .art-img   { width: 100%; border-radius: 12px; margin-bottom: .7rem; display: block; }
@@ -206,7 +163,7 @@
   .art-desc  { font-size: .87rem; margin-top: .45rem; line-height: 1.6; }
 
   /* Places */
-  .place-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+  .place-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; }
   .place-item { background: rgba(0,0,0,.05); border-radius: 12px; padding: .8rem; }
   .place-icon { font-size: 1.5rem; margin-bottom: .25rem; }
   .place-name { font-weight: 700; font-size: .9rem; }
@@ -220,45 +177,29 @@
   .book-reason { font-size: .85rem; margin-top: .2rem; }
 
   /* Activities */
-  .job-sel {
-    width: 100%; padding: .5rem; border: 1.5px solid var(--P);
-    border-radius: 8px; background: var(--card); color: var(--T);
-    font-size: .9rem; margin-bottom: .8rem; cursor: pointer;
-  }
+  .job-sel { width: 100%; padding: .5rem; border: 1.5px solid var(--P); border-radius: 8px; background: var(--card); color: var(--T); font-size: .9rem; margin-bottom: .8rem; cursor: pointer; }
   .act-list { list-style: none; }
-  .act-list li {
-    padding: .55rem .5rem; border-bottom: 1px solid rgba(0,0,0,.06);
-    font-size: .9rem; display: flex; gap: .5rem; align-items: flex-start;
-  }
+  .act-list li { padding: .55rem .5rem; border-bottom: 1px solid rgba(0,0,0,.06); font-size: .9rem; display: flex; gap: .5rem; align-items: flex-start; }
   .act-list li::before { content: '🌟'; flex-shrink: 0; }
   .act-list li:last-child { border-bottom: none; }
 
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    font-size: .78rem;
-    opacity: .45;
-  }
+  footer { text-align: center; padding: 2rem 1rem; font-size: .78rem; opacity: .45; }
 </style>
 </head>
 <body class="clear">
 
-<!-- Header -->
 <div class="site-header">
-  <div class="site-logo">☀️ 행복한 하루</div>
-  <div class="site-sub">날씨와 함께하는 나만의 하루 가이드</div>
-  <div style="text-align:center;margin-bottom:.6rem">
-    <a href="monthly.html" style="display:inline-block;padding:.32rem .9rem;background:var(--card);border-radius:999px;color:var(--P);text-decoration:none;font-size:.82rem;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)">📅 16일 예보</a>
-  </div>
+  <div class="site-logo">📅 행복한 하루 — 예보</div>
+  <div class="site-sub">앞으로 16일, 날씨별 맞춤 추천</div>
   <div class="date-box">
-    <span class="greeting" id="greeting">좋은 아침입니다</span>
-    <span class="date"     id="today-date">-</span>
-    <span class="clock"    id="clock">--:--</span>
+    <span class="today-label">오늘</span>
+    <span class="today-date" id="today-date">-</span>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🌤 오늘 날씨</a>
   </div>
 </div>
 
-<!-- Location bar -->
 <div class="loc-bar">
   <button class="loc-btn" onclick="getGeo()">📍 내 위치</button>
   <input type="text" id="city-input" placeholder="도시 이름 (예: 서울)"
@@ -270,27 +211,33 @@
   <div id="loading">📡 날씨를 불러오는 중...</div>
   <div id="err-box" style="display:none"></div>
 
-  <!-- Weather banner -->
-  <div id="w-banner" class="w-banner" style="display:none">
-    <div class="w-big"  id="w-emoji">☀️</div>
+  <!-- 16일 예보 그리드 -->
+  <div id="forecast-section" class="forecast-section" style="display:none">
+    <div class="section-title">📅 16일 날씨 예보 — 날짜를 클릭하면 추천이 바뀝니다</div>
+    <div id="forecast-grid" class="forecast-grid"></div>
+  </div>
+
+  <!-- 선택된 날 배너 -->
+  <div id="sel-banner" class="sel-banner" style="display:none">
+    <div class="sel-big" id="sel-emoji">☀️</div>
     <div>
-      <div class="w-loc"  id="w-loc">-</div>
-      <div class="w-temp" id="w-temp">--°C</div>
-      <div class="w-cond" id="w-cond">-</div>
-      <div class="w-meta">
-        <span id="w-hum">💧 -</span>
-        <span id="w-wind">💨 -</span>
+      <div class="sel-date" id="sel-date">-</div>
+      <div class="sel-temp" id="sel-temp">--°</div>
+      <div class="sel-cond" id="sel-cond">-</div>
+      <div class="sel-meta">
+        <span id="sel-rain">💧 -</span>
+        <span id="sel-wind">💨 -</span>
       </div>
     </div>
   </div>
 
-  <!-- Quote -->
+  <!-- 명언 -->
   <div id="quote-box" class="quote-box" style="display:none">
     <div class="q-text" id="q-text">-</div>
     <span class="q-src"  id="q-src"></span>
   </div>
 
-  <!-- Tabs -->
+  <!-- 탭 -->
   <div id="tab-bar" class="tab-bar" style="display:none">
     <button class="tab-btn active" onclick="showTab('music')">🎵 음악</button>
     <button class="tab-btn"        onclick="showTab('poem')">📜 시</button>
@@ -300,7 +247,6 @@
     <button class="tab-btn"        onclick="showTab('act')">💼 활동</button>
   </div>
 
-  <!-- Panels -->
   <div id="panel-music"  class="panel active  content-card"></div>
   <div id="panel-poem"   class="panel         content-card"></div>
   <div id="panel-art"    class="panel         content-card"></div>
@@ -313,16 +259,16 @@
 
 <script>
 // ══════════════════════════════════════════
-//  DAILY PICK — 오늘 날짜 기준으로 배열에서 하나 선택
+//  날짜별 pick — 해당 날짜의 연중 몇 번째 날인지 기준
 // ══════════════════════════════════════════
-function pick(arr){
-  const d = new Date();
+function pickForDate(arr, dateStr) {
+  const d   = new Date(dateStr + 'T00:00:00');
   const day = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
   return arr[day % arr.length];
 }
 
 // ══════════════════════════════════════════
-//  CONTENT DB  (musics / poems / arts / quotes — 3개씩, 매일 교체)
+//  CONTENT DB
 // ══════════════════════════════════════════
 const DB = {
   clear:{
@@ -366,7 +312,7 @@ const DB = {
     poems:[
       {title:'향수', author:'정지용 · 1927', text:`넓은 벌 동쪽 끝으로\n옛이야기 지줄대는 실개천이 휘돌아 나가고,\n얼룩배기 황소가\n해설피 금빛 게으른 울음을 우는 곳,\n\n— 그곳이 차마 꿈엔들 잊힐리야.\n\n질화로에 재가 식어지면\n뷔인 밭에 밤바람 소리 말을 달리고,\n엷은 조름에 겨운 늙으신 아버지가\n짚 베개를 돋아 고이시는 곳,\n\n— 그곳이 차마 꿈엔들 잊힐리야.`},
       {title:'나그네', author:'박목월 · 1946', text:`강나루 건너서\n밀밭 길을\n\n구름에 달 가듯이\n가는 나그네.\n\n길은 외줄기\n남도 삼백 리.\n\n술 익은 마을마다\n타는 저녁놀\n\n구름에 달 가듯이\n가는 나그네.`},
-      {title:'청포도', author:'이육사 · 1939', text:`내 고장 칠월은\n청포도가 익어가는 시절.\n\n이 마을 전설이 주저리주저리 열리고\n먼 데 하늘이 꿈꾸며 알알이 들어와 박혀,\n\n하늘 밑 푸른 바다가 가슴을 열고\n흰 돛단배가 곱게 밀려서 오면,\n\n내가 바라는 손님은 고달픈 몸으로\n청포(靑袍)를 입고 찾아온다고 했으니,\n\n내 그를 맞아, 이 포도를 따 먹으면\n두 손은 함뿍 적셔도 좋으련.\n\n아이야, 우리 식탁엔 은쟁반에\n하얀 모시 수건을 마련해 두렴.`}
+      {title:'청포도', author:'이육사 · 1939', text:`내 고장 칠월은\n청포도가 익어가는 시절.\n\n이 마을 전설이 주저리주저리 열리고\n먼 데 하늘이 꿈꾸며 알알이 들어와 박혀,\n\n하늘 밑 푸른 바다가 가슴을 열고\n흰 돛단배가 곱게 밀려서 오면,\n\n내가 바라는 손님은 고달픈 몸으로\n청포(靑袍)를 입고 찾아온다고 했으니,\n\n내 그를 맞아, 이 포도를 따 먹으면\n두 손은 함뿍 적셔도 좋으련.`}
     ],
     arts:[
       {title:'건초 수레 (The Hay Wain)', info:'존 컨스터블 · 1821 · 내셔널 갤러리, 런던', desc:'여름 구름 아래 영국 시골의 평화로운 풍경. 빛과 공기를 그린 낭만주의 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/John_Constable_-_The_Hay_Wain_%281821%29.jpg/800px-John_Constable_-_The_Hay_Wain_%281821%29.jpg'},
@@ -391,8 +337,8 @@ const DB = {
     ],
     poems:[
       {title:'서시', author:'윤동주 · 1941', text:`죽는 날까지 하늘을 우러러\n한 점 부끄럼이 없기를,\n잎새에 이는 바람에도\n나는 괴로워했다.\n\n별을 노래하는 마음으로\n모든 죽어가는 것을 사랑해야지\n그리고 나한테 주어진 길을\n걸어가야겠다.\n\n오늘 밤에도 별이 바람에 스치운다.`},
-      {title:'님의 침묵 (부분)', author:'한용운 · 1926', text:`님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n푸른 산빛을 깨치고 단풍나무 숲을 향하여\n난 작은 길을 걸어서, 차마 떨치고 갔습니다.\n\n우리는 만날 때에 떠날 것을 염려하는 것과 같이,\n떠날 때에 다시 만날 것을 믿습니다.\n\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.\n제 곡조를 못 이기는 사랑의 노래는\n님의 침묵을 휩싸고 돕니다.`},
-      {title:'별 헤는 밤 (부분)', author:'윤동주 · 1941', text:`계절이 지나가는 하늘에는\n가을로 가득 차 있습니다.\n\n나는 아무 걱정도 없이\n가을 속의 별들을 다 헤일 듯합니다.\n\n가슴속에 하나 둘 새겨지는 별을\n이제 다 못 헤는 것은\n쉬이 아침이 오는 까닭이요,\n내일 밤이 남은 까닭이요,\n아직 나의 청춘이 다하지 않은 까닭입니다.\n\n별 하나에 추억과\n별 하나에 사랑과\n별 하나에 쓸쓸함과\n별 하나에 동경과\n별 하나에 시와\n별 하나에 어머니, 어머니.`}
+      {title:'님의 침묵 (부분)', author:'한용운 · 1926', text:`님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n\n우리는 만날 때에 떠날 것을 염려하는 것과 같이,\n떠날 때에 다시 만날 것을 믿습니다.\n\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.\n제 곡조를 못 이기는 사랑의 노래는\n님의 침묵을 휩싸고 돕니다.`},
+      {title:'별 헤는 밤 (부분)', author:'윤동주 · 1941', text:`계절이 지나가는 하늘에는\n가을로 가득 차 있습니다.\n\n나는 아무 걱정도 없이\n가을 속의 별들을 다 헤일 듯합니다.\n\n별 하나에 추억과\n별 하나에 사랑과\n별 하나에 쓸쓸함과\n별 하나에 동경과\n별 하나에 시와\n별 하나에 어머니, 어머니.`}
     ],
     arts:[
       {title:'안개 바다 위의 방랑자', info:'카스파르 다비트 프리드리히 · 1818 · 함부르크 미술관', desc:'흐린 날 산 정상에서 안개 낀 세계를 바라보는 한 인간. 고독과 숭고함의 낭만주의 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg/600px-Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg'},
@@ -416,9 +362,9 @@ const DB = {
       {title:'짐노페디 3번 (Satie, Gymnopédie No.3)', artist:'에릭 사티 (Erik Satie)', yt:'TlNJRiyKkOU', q:'Satie Gymnopédie No 3 piano', why:'고요하고 내면적인 선율. 안개 낀 아침의 고독한 산책.'}
     ],
     poems:[
-      {title:'유리창 1', author:'정지용 · 1930', text:`유리(琉璃)에 차고 슬픈 것이 어른거린다.\n열없이 붙어서서 입김을 흐리우니\n길들은 양 언 날개를 파다거린다.\n지우고 보고 지우고 보아도\n새까만 밤이 밀려나가고 밀려와 부디치고,\n물 먹은 별이, 반짝, 보석처럼 박힌다.\n뒤척이며 죽어 울었다가\n창 밖에 밤비가 속살거려.`},
-      {title:'모란이 피기까지는', author:'김영랑 · 1934', text:`모란이 피기까지는\n나는 아직 나의 봄을 기다리고 있을 테요.\n모란이 뚝뚝 떨어져 버린 날,\n나는 비로소 봄을 여읜 설움에 잠길 테요.\n\n오월 어느 날, 그 하루 무덥던 날,\n떨어져 누운 꽃잎마저 시들어 버리고는\n천지에 모란은 자취도 없어지고,\n뻗쳐 오르던 내 보람 서운케 무너졌느니,\n모란이 지고 말면 그뿐, 내 한 해는 다 가고 말아,\n삼백예순 날 하냥 섭섭해 우옵내다.\n\n모란이 피기까지는\n나는 아직 기다리고 있을 테요, 찬란한 슬픔의 봄을.`},
-      {title:'절정', author:'이육사 · 1940', text:`매운 계절(季節)의 채찍에 갈겨\n마침내 북방(北方)으로 휩쓸려 오다.\n\n하늘도 그만 지쳐 끝난 고원(高原)\n서릿발 칼날진 그 위에 서다.\n\n어디다 무릎을 꿇어야 하나\n한 발 재겨 디딜 곳조차 없다.\n\n이러매 눈 감아 생각해 볼밖에\n겨울은 강철로 된 무지갠가 보다.`}
+      {title:'유리창 1', author:'정지용 · 1930', text:`유리(琉璃)에 차고 슬픈 것이 어른거린다.\n열없이 붙어서서 입김을 흐리우니\n길들은 양 언 날개를 파다거린다.\n지우고 보고 지우고 보아도\n새까만 밤이 밀려나가고 밀려와 부디치고,\n물 먹은 별이, 반짝, 보석처럼 박힌다.`},
+      {title:'모란이 피기까지는', author:'김영랑 · 1934', text:`모란이 피기까지는\n나는 아직 나의 봄을 기다리고 있을 테요.\n\n모란이 지고 말면 그뿐, 내 한 해는 다 가고 말아,\n삼백예순 날 하냥 섭섭해 우옵내다.\n\n모란이 피기까지는\n나는 아직 기다리고 있을 테요, 찬란한 슬픔의 봄을.`},
+      {title:'절정', author:'이육사 · 1940', text:`매운 계절(季節)의 채찍에 갈겨\n마침내 북방(北方)으로 휩쓸려 오다.\n\n하늘도 그만 지쳐 끝난 고원(高原)\n서릿발 칼날진 그 위에 서다.\n\n이러매 눈 감아 생각해 볼밖에\n겨울은 강철로 된 무지갠가 보다.`}
     ],
     arts:[
       {title:'전함 테메레르의 마지막 항해', info:'J.M.W. 터너 · 1839 · 내셔널 갤러리, 런던', desc:'안개와 빛이 뒤섞인 강. 증기선에 이끌려 마지막 항해를 하는 노 전함. 시간의 무상함.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/The_Fighting_Temeraire%2C_JMW_Turner%2C_National_Gallery.jpg/800px-The_Fighting_Temeraire%2C_JMW_Turner%2C_National_Gallery.jpg'},
@@ -442,7 +388,7 @@ const DB = {
       {title:'파반느 (Fauré, Pavane)', artist:'포레 (Fauré)', yt:'FXX16OJV_oc', q:'Fauré Pavane Op 50 classical', why:'우아하고 섬세한 선율. 이슬비처럼 부드럽게 내려앉는 음악.'}
     ],
     poems:[
-      {title:'빼앗긴 들에도 봄은 오는가', author:'이상화 · 1926', text:`지금은 남의 땅 — 빼앗긴 들에도 봄은 오는가?\n\n나는 온몸에 풋내를 띠고,\n푸른 웃음 푸른 설움이 어우러진 사이로\n다리를 절며 하루를 걷는다.\n아마도 봄 신명이 지폈나 보다.\n\n그러나 지금은 — 들을 빼앗겨\n봄조차 빼앗기겠네.`},
+      {title:'빼앗긴 들에도 봄은 오는가', author:'이상화 · 1926', text:`지금은 남의 땅 — 빼앗긴 들에도 봄은 오는가?\n\n나는 온몸에 풋내를 띠고,\n푸른 웃음 푸른 설움이 어우러진 사이로\n다리를 절며 하루를 걷는다.\n\n그러나 지금은 — 들을 빼앗겨\n봄조차 빼앗기겠네.`},
       {title:'풀꽃', author:'나태주 · 1989', text:`자세히 보아야 예쁘다\n오래 보아야 사랑스럽다\n너도 그렇다.`},
       {title:'먼 후일', author:'김소월 · 1925', text:`먼 훗날 당신이 찾으시면\n그때에 내 말이 "잊었노라."\n\n당신이 속으로 나무라면\n"무척 그리다가 잊었노라."\n\n그래도 당신이 나무라면\n"믿기지 않아서 잊었노라."\n\n오늘도 어제도 아니 잊고\n먼 훗날 그때에 "잊었노라."`}
     ],
@@ -469,8 +415,8 @@ const DB = {
     ],
     poems:[
       {title:'진달래꽃', author:'김소월 · 1922', text:`나 보기가 역겨워\n가실 때에는\n말없이 고이 보내 드리오리다.\n\n영변에 약산\n진달래꽃\n아름 따다 가실 길에 뿌리오리다.\n\n가시는 걸음걸음\n놓인 그 꽃을\n사뿐히 즈려밟고 가시옵소서.\n\n나 보기가 역겨워\n가실 때에는\n죽어도 아니 눈물 흘리오리다.`},
-      {title:'님의 침묵 (부분)', author:'한용운 · 1926', text:`님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n\n우리는 만날 때에 떠날 것을 염려하는 것과 같이,\n떠날 때에 다시 만날 것을 믿습니다.\n\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.\n제 곡조를 못 이기는 사랑의 노래는\n님의 침묵을 휩싸고 돕니다.`},
-      {title:'자화상', author:'윤동주 · 1939', text:`산모퉁이를 돌아 논가 외딴 우물을\n홀로 찾아가선 가만히 들여다봅니다.\n\n우물 속에는 달이 밝고 구름이 흐르고\n하늘이 펼치고 파아란 바람이 불고\n가을이 있고 추억처럼 사나이가 있습니다.\n\n어쩐지 그 사나이가 미워져 돌아갑니다.\n\n돌아가다 생각하니 그 사나이가 가엾어집니다.\n도로 가 들여다보니 사나이는 그대로 있습니다.\n\n다시 그 사나이가 미워져 돌아갑니다.\n돌아가다 생각하니 그 사나이가 그리워집니다.\n\n우물 속에는 달이 밝고 구름이 흐르고\n하늘이 펼치고 파아란 바람이 불고\n가을이 있고 추억처럼 사나이가 있습니다.`}
+      {title:'님의 침묵 (부분)', author:'한용운 · 1926', text:`님은 갔습니다. 아아, 사랑하는 나의 님은 갔습니다.\n\n우리는 만날 때에 떠날 것을 염려하는 것과 같이,\n떠날 때에 다시 만날 것을 믿습니다.\n\n아아, 님은 갔지마는 나는 님을 보내지 아니하였습니다.`},
+      {title:'자화상', author:'윤동주 · 1939', text:`산모퉁이를 돌아 논가 외딴 우물을\n홀로 찾아가선 가만히 들여다봅니다.\n\n우물 속에는 달이 밝고 구름이 흐르고\n하늘이 펼치고 파아란 바람이 불고\n가을이 있고 추억처럼 사나이가 있습니다.\n\n어쩐지 그 사나이가 미워져 돌아갑니다.\n\n돌아가다 생각하니 그 사나이가 가엾어집니다.\n도로 가 들여다보니 사나이는 그대로 있습니다.`}
     ],
     arts:[
       {title:'파리 거리, 빗속에', info:'귀스타브 카유보트 · 1877 · 시카고 미술관', desc:'우산을 든 파리 시민들이 오스만 대로를 걷는 사실적 풍경. 비 오는 도시의 정수.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg/800px-Gustave_Caillebotte_-_Paris_Street%3B_Rainy_Day_-_Google_Art_Project.jpg'},
@@ -496,7 +442,7 @@ const DB = {
     poems:[
       {title:'나와 나타샤와 흰 당나귀', author:'백석 · 1938', text:`가난한 내가\n아름다운 나타샤를 사랑해서\n오늘밤은 푹푹 눈이 나린다\n\n나타샤를 사랑은 하고\n눈은 푹푹 날리고\n나는 혼자 쓸쓸히 앉아 소주를 마신다\n소주를 마시며 생각한다\n나타샤와 나는\n눈이 푹푹 쌓이는 밤 흰 당나귀 타고\n산골로 가자 출출이 우는 깊은 산골로 가 마가리에 살자`},
       {title:'절정', author:'이육사 · 1940', text:`매운 계절(季節)의 채찍에 갈겨\n마침내 북방(北方)으로 휩쓸려 오다.\n\n하늘도 그만 지쳐 끝난 고원(高原)\n서릿발 칼날진 그 위에 서다.\n\n어디다 무릎을 꿇어야 하나\n한 발 재겨 디딜 곳조차 없다.\n\n이러매 눈 감아 생각해 볼밖에\n겨울은 강철로 된 무지갠가 보다.`},
-      {title:'별 헤는 밤 (부분)', author:'윤동주 · 1941', text:`계절이 지나가는 하늘에는\n가을로 가득 차 있습니다.\n\n나는 아무 걱정도 없이\n가을 속의 별들을 다 헤일 듯합니다.\n\n가슴속에 하나 둘 새겨지는 별을\n이제 다 못 헤는 것은\n쉬이 아침이 오는 까닭이요,\n내일 밤이 남은 까닭이요,\n아직 나의 청춘이 다하지 않은 까닭입니다.\n\n별 하나에 추억과\n별 하나에 사랑과\n별 하나에 쓸쓸함과\n별 하나에 동경과\n별 하나에 시와\n별 하나에 어머니, 어머니.`}
+      {title:'별 헤는 밤 (부분)', author:'윤동주 · 1941', text:`계절이 지나가는 하늘에는\n가을로 가득 차 있습니다.\n\n나는 아무 걱정도 없이\n가을 속의 별들을 다 헤일 듯합니다.\n\n별 하나에 추억과\n별 하나에 사랑과\n별 하나에 쓸쓸함과\n별 하나에 동경과\n별 하나에 시와\n별 하나에 어머니, 어머니.`}
     ],
     arts:[
       {title:'눈 속의 사냥꾼 (Hunters in the Snow)', info:'피터르 브뤼헐 · 1565 · 빈 미술사 박물관', desc:'눈 덮인 플랑드르 마을. 사냥꾼들이 돌아오고 마을 사람들은 얼음판을 지친다. 겨울의 서사시.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Pieter_Bruegel_the_Elder_-_Hunters_in_the_Snow_%28Winter%29_-_Google_Art_Project.jpg/800px-Pieter_Bruegel_the_Elder_-_Hunters_in_the_Snow_%28Winter%29_-_Google_Art_Project.jpg'},
@@ -522,7 +468,7 @@ const DB = {
     poems:[
       {title:'광야', author:'이육사 · 1945', text:`까마득한 날에\n하늘이 처음 열리고\n어디 닭 우는 소리 들렸으랴.\n\n모든 산맥들이\n바다를 연모해 휘달릴 때도\n차마 이 곳을 범하던 못하였으리라.\n\n지금 눈 내리고\n매화 향기 홀로 아득하니\n내 여기 가난한 노래의 씨를 뿌려라.\n\n다시 천고(千古)의 뒤에\n백마 타고 오는 초인이 있어\n이 광야에서 목 놓아 부르게 하리라.`},
       {title:'해에게서 소년에게 (부분)', author:'최남선 · 1908', text:`처……ㄹ썩, 처……ㄹ썩, 척, 쏴……아.\n때린다 부순다 무너버린다,\n태산 같은 높은 뫼, 집채 같은 바윗돌이나,\n요것이 무어야, 요게 무어야.\n나의 큰 힘 아느냐, 모르느냐,\n호통까지 내어가며\n처……ㄹ썩, 처……ㄹ썩, 척, 튜르릉, 뚝!`},
-      {title:'쉽게 씌어진 시 (부분)', author:'윤동주 · 1942', text:`창 밖에 밤비가 속살거려\n육첩방(六疊房)은 남의 나라,\n\n시인이란 슬픈 천명인 줄 알면서도\n한 줄 시를 적어 볼까,\n\n인생은 살기 어렵다는데\n시가 이렇게 쉽게 씌어지는 것은\n부끄러운 일이다.\n\n등불을 밝혀 어둠을 조금 내몰고,\n시대처럼 올 아침을 기다리는 최후의 나,\n\n나는 나에게 작은 손을 내밀어\n눈물과 위안으로 잡는 최후의 악수.`}
+      {title:'쉽게 씌어진 시 (부분)', author:'윤동주 · 1942', text:`창 밖에 밤비가 속살거려\n육첩방(六疊房)은 남의 나라,\n\n인생은 살기 어렵다는데\n시가 이렇게 쉽게 씌어지는 것은\n부끄러운 일이다.\n\n등불을 밝혀 어둠을 조금 내몰고,\n시대처럼 올 아침을 기다리는 최후의 나,\n\n나는 나에게 작은 손을 내밀어\n눈물과 위안으로 잡는 최후의 악수.`}
     ],
     arts:[
       {title:'가나가와 해변의 큰 파도', info:'가쓰시카 호쿠사이 · 1831 · 메트로폴리탄 미술관', desc:'거대한 파도 앞에 선 작은 배들. 자연의 압도적인 힘과 인간의 작음. 우키요에 걸작.', img:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Great_Wave_off_Kanagawa2.jpg/800px-Great_Wave_off_Kanagawa2.jpg'},
@@ -536,103 +482,178 @@ const DB = {
 };
 
 // ══════════════════════════════════════════
-//  HELPERS
+//  STATE & HELPERS
 // ══════════════════════════════════════════
-let cur = 'clear';
 const $ = id => document.getElementById(id);
+const WEEKDAYS = ['일','월','화','수','목','금','토'];
+let forecast = null;
+let curCond  = 'clear';
 
-function getCondition(c){
-  if(c<=1)return 'clear';if(c===2)return 'partlyCloudy';if(c===3)return 'cloudy';
-  if(c===45||c===48)return 'foggy';if(c>=51&&c<=57)return 'drizzle';
-  if([61,63,65,80,81,82].includes(c))return 'rainy';
-  if([71,73,75,85,86,77].includes(c))return 'snowy';if(c>=95)return 'thunderstorm';
+function getCondition(c) {
+  if(c<=1) return 'clear'; if(c===2) return 'partlyCloudy'; if(c===3) return 'cloudy';
+  if(c===45||c===48) return 'foggy'; if(c>=51&&c<=57) return 'drizzle';
+  if([61,63,65,80,81,82].includes(c)) return 'rainy';
+  if([71,73,75,85,86,77].includes(c)) return 'snowy';
+  if(c>=95) return 'thunderstorm';
   return 'partlyCloudy';
 }
 
-function getGreeting(){
-  const h=new Date().getHours();
-  if(h<6)return '새벽에도 빛나는 하루';if(h<12)return '좋은 아침입니다 ☀️';
-  if(h<14)return '맛있는 점심 드셨나요? 😊';if(h<18)return '좋은 오후입니다 🌤';
-  if(h<21)return '좋은 저녁입니다 🌙';return '오늘도 수고하셨습니다 ✨';
+function todayStr() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
 
-function updateClock(){
-  const n=new Date();
-  const days=['일','월','화','수','목','금','토'];
-  $('today-date').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${days[n.getDay()]}요일`;
-  $('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-  $('greeting').textContent=getGreeting();
+function initHeader() {
+  const n = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  $('today-date').textContent = `${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${days[n.getDay()]}요일`;
 }
 
 // ══════════════════════════════════════════
 //  FETCH
 // ══════════════════════════════════════════
-async function fetchWeather(lat,lon){
-  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto&wind_speed_unit=kmh`);
-  return (await r.json()).current;
+async function fetchForecast(lat, lon) {
+  const r = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max` +
+    `&timezone=auto&forecast_days=16`
+  );
+  return (await r.json()).daily;
 }
-async function reverseGeo(lat,lon){
-  try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ko`);const j=await r.json();return j.address?.city||j.address?.county||j.address?.state||'현재 위치';}
-  catch{return '현재 위치';}
+
+async function reverseGeo(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ko`);
+    const j = await r.json();
+    return j.address?.city || j.address?.county || j.address?.state || '현재 위치';
+  } catch { return '현재 위치'; }
 }
 
 // ══════════════════════════════════════════
 //  ENTRY POINTS
 // ══════════════════════════════════════════
-function getGeo(){
-  if(!navigator.geolocation){showErr('위치 서비스를 지원하지 않는 브라우저입니다.');return;}
+function getGeo() {
+  if(!navigator.geolocation) { showErr('위치 서비스를 지원하지 않는 브라우저입니다.'); return; }
   showLoading();
   navigator.geolocation.getCurrentPosition(
-    async p=>{const city=await reverseGeo(p.coords.latitude,p.coords.longitude);await load(p.coords.latitude,p.coords.longitude,city);},
-    ()=>load(37.5665,126.9780,'서울')
+    async p => {
+      const city = await reverseGeo(p.coords.latitude, p.coords.longitude);
+      await load(p.coords.latitude, p.coords.longitude, city);
+    },
+    () => load(37.5665, 126.9780, '서울')
   );
 }
-async function searchCity(){
-  const city=$('city-input').value.trim();if(!city)return;showLoading();
-  try{
-    const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ko&format=json`);
-    const j=await r.json();if(!j.results?.length)throw new Error('도시를 찾을 수 없습니다.');
-    const{latitude,longitude,name}=j.results[0];await load(latitude,longitude,name);
-  }catch(e){showErr(e.message);}
+
+async function searchCity() {
+  const city = $('city-input').value.trim();
+  if(!city) return;
+  showLoading();
+  try {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ko&format=json`);
+    const j = await r.json();
+    if(!j.results?.length) throw new Error('도시를 찾을 수 없습니다.');
+    const { latitude, longitude, name } = j.results[0];
+    await load(latitude, longitude, name);
+  } catch(e) { showErr(e.message); }
 }
-async function load(lat,lon,city){
-  try{
-    showLoading();const w=await fetchWeather(lat,lon);cur=getCondition(w.weather_code);
-    renderWeather(w,city);renderAll();
-  }catch(e){showErr('날씨를 불러오지 못했습니다: '+e.message);}
+
+async function load(lat, lon, city) {
+  try {
+    showLoading();
+    forecast = await fetchForecast(lat, lon);
+    renderCalendar(city);
+    selectDay(0);
+  } catch(e) { showErr('날씨를 불러오지 못했습니다: ' + e.message); }
 }
 
 // ══════════════════════════════════════════
-//  RENDER
+//  RENDER CALENDAR
 // ══════════════════════════════════════════
-function renderWeather(w,city){
-  const d=DB[cur];document.body.className=d.cls;
-  $('loading').style.display='none';$('err-box').style.display='none';
-  $('w-emoji').textContent=d.emoji;$('w-loc').textContent='📍 '+city;
-  $('w-temp').textContent=Math.round(w.temperature_2m)+'°C';
-  $('w-cond').textContent=d.name;
-  $('w-hum').textContent='💧 '+w.relative_humidity_2m+'%';
-  $('w-wind').textContent='💨 '+Math.round(w.wind_speed_10m)+'km/h';
-  $('w-banner').style.display='flex';
+function renderCalendar(city) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'block';
+
+  const today = todayStr();
+  $('forecast-grid').innerHTML = forecast.time.map((dateStr, idx) => {
+    const d    = new Date(dateStr + 'T00:00:00');
+    const cond = getCondition(forecast.weather_code[idx]);
+    const emoji = DB[cond].emoji;
+    const tmax  = Math.round(forecast.temperature_2m_max[idx]);
+    const tmin  = Math.round(forecast.temperature_2m_min[idx]);
+    const rain  = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+    const isToday = dateStr === today;
+
+    return `<div class="day-card${isToday ? ' today-card' : ''}"
+              onclick="selectDay(${idx})" id="day-card-${idx}">
+      <div class="day-wd">${isToday ? '오늘' : WEEKDAYS[d.getDay()]}</div>
+      <div class="day-dt">${d.getMonth()+1}/${d.getDate()}</div>
+      <span class="day-ico">${emoji}</span>
+      <div class="day-tmax">${tmax}°</div>
+      <div class="day-tmin">${tmin}°</div>
+      ${rain > 0.5 ? `<div class="day-rain">💧${rain}mm</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
-function renderAll(){
-  const d = DB[cur];
-  const quote = pick(d.quotes);
-  const music = pick(d.musics);
-  const poem  = pick(d.poems);
-  const art   = pick(d.arts);
+// ══════════════════════════════════════════
+//  SELECT DAY
+// ══════════════════════════════════════════
+function selectDay(idx) {
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('sel'));
+  const card = $('day-card-' + idx);
+  if(card) {
+    card.classList.add('sel');
+    // 선택 카드가 화면 안에 오도록 스크롤
+    card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
 
-  // Quote
-  $('q-text').textContent = quote.t;
-  $('q-src').textContent  = quote.s;
+  const dateStr = forecast.time[idx];
+  curCond = getCondition(forecast.weather_code[idx]);
+  const d = DB[curCond];
+
+  // 테마 변경
+  document.body.className = d.cls;
+
+  // 선택일 배너
+  const date    = new Date(dateStr + 'T00:00:00');
+  const today   = todayStr();
+  const isToday = dateStr === today;
+  const label   = isToday
+    ? `오늘 — ${date.getMonth()+1}월 ${date.getDate()}일`
+    : `${WEEKDAYS[date.getDay()]}요일, ${date.getMonth()+1}월 ${date.getDate()}일`;
+
+  $('sel-emoji').textContent = d.emoji;
+  $('sel-date').textContent  = '📅 ' + label;
+  $('sel-temp').textContent  = `최고 ${Math.round(forecast.temperature_2m_max[idx])}° / 최저 ${Math.round(forecast.temperature_2m_min[idx])}°`;
+  $('sel-cond').textContent  = d.name;
+  const rain = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+  $('sel-rain').textContent  = `💧 ${rain > 0 ? rain + 'mm' : '강수 없음'}`;
+  $('sel-wind').textContent  = `💨 ${Math.round(forecast.wind_speed_10m_max[idx])}km/h`;
+  $('sel-banner').style.display = 'flex';
+
+  // 콘텐츠 렌더
+  renderContent(curCond, dateStr);
+
   $('quote-box').style.display   = 'block';
   $('quote-box').style.background = 'var(--P)';
-
-  // Tab bar
   $('tab-bar').style.display = 'flex';
+  showTab('music');
+}
 
-  // Music
+// ══════════════════════════════════════════
+//  RENDER CONTENT (날짜 기반 pick)
+// ══════════════════════════════════════════
+function renderContent(cond, dateStr) {
+  const d     = DB[cond];
+  const quote = pickForDate(d.quotes, dateStr);
+  const music = pickForDate(d.musics, dateStr);
+  const poem  = pickForDate(d.poems,  dateStr);
+  const art   = pickForDate(d.arts,   dateStr);
+
+  $('q-text').textContent = quote.t;
+  $('q-src').textContent  = quote.s;
+
   $('panel-music').innerHTML = `
     <div class="music-artist">${music.artist}</div>
     <div class="music-title">${music.title}</div>
@@ -640,19 +661,14 @@ function renderAll(){
     <div class="yt-wrap"><iframe src="https://www.youtube-nocookie.com/embed/${music.yt}?rel=0&modestbranding=1" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>
     <a class="yt-search-link" href="https://www.youtube.com/results?search_query=${encodeURIComponent(music.q)}" target="_blank" rel="noopener">▶ YouTube에서 "${music.title}" 검색</a>`;
 
-  // Poem
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
-  // Art — loading="eager" 로 숨겨진 패널에서도 로드됨
   $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" loading="eager"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
-  // Places
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
 
-  // Books
   $('panel-books').innerHTML = d.books.map(b=>`<div class="book-item"><div class="book-title">📖 ${b.t}</div><div class="book-author">${b.a}</div><div class="book-reason">${b.r}</div></div>`).join('');
 
-  // Activities
   $('panel-act').innerHTML = `
     <select class="job-sel" id="job-sel" onchange="renderAct()">
       <option value="student">🎓 학생</option>
@@ -664,41 +680,45 @@ function renderAll(){
     </select>
     <ul id="act-list" class="act-list"></ul>`;
   renderAct();
-
-  // Show first tab
-  showTab('music');
 }
 
-function renderAct(){
-  const job=($('job-sel')||{}).value||'student';
-  const acts=DB[cur]?.jobs[job]||[];
-  $('act-list').innerHTML=acts.map(a=>`<li>${a}</li>`).join('');
+function renderAct() {
+  const job  = ($('job-sel') || {}).value || 'student';
+  const acts = DB[curCond]?.jobs[job] || [];
+  $('act-list').innerHTML = acts.map(a => `<li>${a}</li>`).join('');
 }
 
-function showTab(name){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    const tabs=['music','poem','art','places','books','act'];
-    b.classList.toggle('active',tabs[i]===name);
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['music','poem','art','places','books','act'];
+    b.classList.toggle('active', tabs[i] === name);
   });
-  ['music','poem','art','places','books','act'].forEach(t=>{
-    $('panel-'+t).classList.toggle('active',t===name);
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.toggle('active', t === name);
   });
 }
 
-// ── Loading / Error ───────────────────────
-function showLoading(){
-  $('loading').style.display='block';$('err-box').style.display='none';
-  $('w-banner').style.display='none';$('quote-box').style.display='none';$('tab-bar').style.display='none';
-  ['music','poem','art','places','books','act'].forEach(t=>{$('panel-'+t).classList.remove('active');});
+function showLoading() {
+  $('loading').style.display = 'block';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'none';
+  $('sel-banner').style.display = 'none';
+  $('quote-box').style.display  = 'none';
+  $('tab-bar').style.display    = 'none';
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.remove('active');
+  });
 }
-function showErr(msg){
-  $('loading').style.display='none';$('err-box').style.display='block';
-  $('err-box').innerHTML=`<p>⚠️ ${msg}</p><button class="err-btn" onclick="load(37.5665,126.9780,'서울')">서울 날씨로 보기</button>`;
+
+function showErr(msg) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'block';
+  $('err-box').innerHTML = `<p>⚠️ ${msg}</p><button class="err-btn" onclick="load(37.5665,126.9780,'서울')">서울 날씨로 보기</button>`;
 }
 
 // ── Init ─────────────────────────────────
-updateClock();setInterval(updateClock,30000);
-window.addEventListener('load',getGeo);
+initHeader();
+window.addEventListener('load', getGeo);
 </script>
 </body>
 </html>
