@@ -653,9 +653,8 @@ function renderAll(){
   // Poem
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
-  // Art — new Image()로 display:none 상태에서도 미리 캐시 로드
-  $('panel-art').innerHTML = `<img class="art-img" id="art-img-el" src="" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
-  (function(url){ const t=new Image(); t.onload=()=>{const e=document.getElementById('art-img-el');if(e)e.src=url;}; t.onerror=()=>{const e=document.getElementById('art-img-el');if(e)e.style.display='none';}; t.src=url; })(art.img);
+  // Art — data-src로 저장, 탭 열릴 때 src 설정 (display:none 문제 완전 회피)
+  $('panel-art').innerHTML = `<img class="art-img" id="art-img-el" data-src="${art.img}" src="" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
   // Places
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
@@ -699,6 +698,11 @@ function showTab(name){
   ['music','poem','art','places','books','act'].forEach(t=>{
     $('panel-'+t).classList.toggle('active',t===name);
   });
+  // art 탭 열릴 때 이미지 로드 (display:none → block 후 src 설정)
+  if(name==='art'){
+    const img=document.getElementById('art-img-el');
+    if(img && img.dataset.src && !img.src){img.src=img.dataset.src;}
+  }
 }
 
 // ── Loading / Error ───────────────────────
