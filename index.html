@@ -655,7 +655,7 @@ function renderAll(){
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
   // Art
-  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" referrerpolicy="no-referrer" style="min-height:60px;background:rgba(0,0,0,.05)" onerror="this.style.display='none'"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
   // Places
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
