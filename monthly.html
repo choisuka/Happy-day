@@ -150,7 +150,7 @@
   .music-title  { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
   .music-why    { font-size: .85rem; opacity: .7; margin-bottom: .8rem; padding: .5rem; background: rgba(0,0,0,.04); border-radius: 8px; border-left: 3px solid var(--P); }
   /* YouTube 썸네일 클릭 재생 */
-  .yt-cover { position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; margin-bottom: .4rem; }
+  .yt-cover { display: block; position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; cursor: pointer; background: #000; margin-bottom: .4rem; text-decoration: none; }
   .yt-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s; }
   .yt-cover:hover img { opacity: .85; }
   .yt-play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 62px; height: 62px; background: rgba(220,0,0,.88); border-radius: 50%; pointer-events: none; transition: transform .18s, background .18s; }
@@ -665,17 +665,16 @@ function renderContent(cond, dateStr) {
     <div class="music-artist">${music.artist}</div>
     <div class="music-title">${music.title}</div>
     <div class="music-why">${music.why}</div>
-    <div class="yt-cover" onclick="loadYT(this,'${music.yt}')">
+    <a class="yt-cover" href="https://www.youtube.com/watch?v=${music.yt}" target="_blank" rel="noopener">
       <img src="https://img.youtube.com/vi/${music.yt}/hqdefault.jpg"
            onerror="this.src='https://img.youtube.com/vi/${music.yt}/mqdefault.jpg'"
            alt="${music.title}">
       <div class="yt-play-btn"></div>
-    </div>
-    <a class="yt-open-link" href="https://www.youtube.com/watch?v=${music.yt}" target="_blank" rel="noopener">↗ YouTube에서 바로 열기</a>`;
+    </a>`;
 
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div>`;
 
-  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
+  $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" referrerpolicy="no-referrer" style="min-height:60px;background:rgba(0,0,0,.05)" onerror="this.style.display='none'"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<div class="place-item"><div class="place-icon">${p.i}</div><div class="place-name">${p.n}</div><div class="place-desc">${p.d}</div></div>`).join('')}</div>`;
 
