@@ -5,19 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
-<title>행복한 하루</title>
+<title>행복한 하루 — 16일 예보</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --card: rgba(255,255,255,.88); --radius: 18px; }
 
-  :root {
-    --warm: #f59e0b;
-    --rose: #e11d48;
-    --teal: #0d9488;
-    --card: rgba(255,255,255,.88);
-    --radius: 18px;
-  }
-
-  /* ── Weather Themes ── */
   body.clear        { --A:#fef3c7; --B:#fed7aa; --P:#d97706; --T:#78350f; }
   body.partlyCloudy { --A:#dbeafe; --B:#e0f2fe; --P:#0284c7; --T:#0c4a6e; }
   body.cloudy       { --A:#e2e8f0; --B:#cbd5e1; --P:#475569; --T:#1e293b; }
@@ -37,147 +29,121 @@
   }
 
   /* ── HEADER ── */
-  .site-header {
-    text-align: center;
-    padding: 2.5rem 1rem 1.5rem;
-    position: relative;
+  .site-header { text-align: center; padding: 2rem 1rem 1rem; }
+  .site-logo   { font-size: 1.9rem; font-weight: 900; color: var(--P); margin-bottom: .15rem; }
+  .site-sub    { font-size: .83rem; opacity: .65; margin-bottom: .7rem; }
+  .date-box    {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: var(--card); backdrop-filter: blur(10px);
+    border-radius: 14px; padding: .5rem 1.3rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08); margin-bottom: .6rem;
   }
-  .site-logo {
-    font-size: 2rem;
-    font-weight: 900;
-    letter-spacing: -.02em;
-    color: var(--P, #d97706);
-    margin-bottom: .2rem;
+  .date-box .today-label { font-size: .75rem; opacity: .55; }
+  .date-box .today-date  { font-size: .95rem; font-weight: 700; color: var(--P); }
+
+  .nav-links { display: flex; justify-content: center; gap: .5rem; flex-wrap: wrap; }
+  .nav-link  {
+    display: inline-block; padding: .32rem .8rem;
+    background: var(--card); border-radius: 999px;
+    color: var(--P); text-decoration: none; font-size: .82rem; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: opacity .2s;
   }
-  .site-sub {
-    font-size: .85rem;
-    opacity: .65;
-    margin-bottom: 1rem;
-  }
-  .date-box {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--card);
-    backdrop-filter: blur(10px);
-    border-radius: 14px;
-    padding: .6rem 1.4rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,.08);
-  }
-  .date-box .greeting { font-size: .8rem; opacity: .6; }
-  .date-box .date     { font-size: 1rem; font-weight: 700; color: var(--P); }
-  .date-box .clock    { font-size: .85rem; opacity: .55; }
+  .nav-link:hover { opacity: .8; }
 
   /* ── LOCATION BAR ── */
-  .loc-bar {
-    display: flex;
-    justify-content: center;
-    gap: .5rem;
-    padding: .6rem 1rem;
-    flex-wrap: wrap;
-  }
+  .loc-bar { display: flex; justify-content: center; gap: .5rem; padding: .5rem 1rem; flex-wrap: wrap; }
   .loc-bar input {
-    padding: .45rem .9rem;
-    border: 1.5px solid var(--P, #d97706);
-    border-radius: 8px;
-    font-size: .88rem;
-    background: var(--card);
-    color: var(--T);
-    width: 175px;
+    padding: .45rem .9rem; border: 1.5px solid var(--P);
+    border-radius: 8px; font-size: .88rem; background: var(--card); color: var(--T); width: 175px;
   }
   .loc-btn {
-    padding: .45rem .9rem;
-    background: var(--P, #d97706);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .88rem;
-    font-weight: 600;
-    transition: opacity .2s;
+    padding: .45rem .9rem; background: var(--P); color: #fff;
+    border: none; border-radius: 8px; cursor: pointer; font-size: .88rem;
+    font-weight: 600; transition: opacity .2s;
   }
   .loc-btn:hover { opacity: .85; }
 
   /* ── MAIN ── */
-  main { max-width: 700px; margin: 0 auto; padding: .5rem 1rem 4rem; }
-
+  main { max-width: 740px; margin: 0 auto; padding: .5rem 1rem 4rem; }
   #loading { text-align: center; padding: 2.5rem; font-size: 1rem; color: var(--P); }
-  #err-box  { text-align: center; padding: 1.5rem; }
-  .err-btn  { margin-top: .6rem; padding: .4rem .9rem; background: var(--rose); color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+  #err-box { text-align: center; padding: 1.5rem; }
+  .err-btn { margin-top: .6rem; padding: .4rem .9rem; background: #e11d48; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
 
-  /* ── WEATHER BANNER ── */
-  .w-banner {
+  /* ── FORECAST GRID ── */
+  .forecast-section { margin-bottom: 1.2rem; }
+  .section-title {
+    font-size: .75rem; font-weight: 700; opacity: .45;
+    text-transform: uppercase; letter-spacing: .07em; margin-bottom: .5rem;
+  }
+  .forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: .4rem;
+  }
+  @media (max-width: 620px) { .forecast-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .day-card {
     background: var(--card);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius);
-    padding: 1.2rem 1.5rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,.1);
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: .55rem .3rem;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all .18s;
+    min-width: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
   }
-  .w-big   { font-size: 3.8rem; flex-shrink: 0; }
-  .w-loc   { font-size: .82rem; opacity: .6; margin-bottom: .15rem; }
-  .w-temp  { font-size: 1.9rem; font-weight: 800; }
-  .w-cond  { font-size: .95rem; font-weight: 600; }
-  .w-meta  { display: flex; gap: .8rem; font-size: .8rem; margin-top: .35rem; opacity: .6; }
+  .day-card:hover  { border-color: var(--P); transform: translateY(-2px); box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+  .day-card.sel    { background: var(--P); color: #fff; border-color: var(--P); }
+  .day-card.today-card .day-wd { color: var(--P); font-weight: 800; }
+  .day-card.sel    .day-wd     { color: rgba(255,255,255,.75); }
 
-  /* ── QUOTE BOX ── */
-  .quote-box {
-    background: var(--P, #d97706);
-    color: #fff;
-    border-radius: var(--radius);
-    padding: 1rem 1.3rem;
-    margin-bottom: 1rem;
-    font-size: .95rem;
-    font-style: italic;
-    font-weight: 500;
-    box-shadow: 0 4px 18px rgba(0,0,0,.12);
-    position: relative;
-    overflow: hidden;
+  .day-wd   { font-size: .6rem; opacity: .7; }
+  .day-dt   { font-size: .7rem; font-weight: 700; margin-bottom: .1rem; }
+  .day-ico  { font-size: 1.4rem; display: block; margin: .1rem 0; }
+  .day-tmax { font-size: .72rem; font-weight: 700; }
+  .day-tmin { font-size: .64rem; opacity: .6; }
+  .day-rain { font-size: .58rem; opacity: .55; margin-top: .05rem; }
+
+  /* ── SELECTED DAY BANNER ── */
+  .sel-banner {
+    background: var(--card); backdrop-filter: blur(12px);
+    border-radius: var(--radius); padding: 1.2rem 1.5rem;
+    margin-bottom: 1rem; box-shadow: 0 4px 24px rgba(0,0,0,.1);
+    display: flex; align-items: center; gap: 1.2rem;
   }
-  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia, serif; }
+  .sel-big  { font-size: 3.5rem; flex-shrink: 0; }
+  .sel-date { font-size: .82rem; opacity: .6; margin-bottom: .1rem; }
+  .sel-temp { font-size: 1.7rem; font-weight: 800; }
+  .sel-cond { font-size: .9rem; font-weight: 600; }
+  .sel-meta { display: flex; gap: .8rem; font-size: .78rem; margin-top: .3rem; opacity: .6; flex-wrap: wrap; }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    background: var(--P); color: #fff; border-radius: var(--radius);
+    padding: 1rem 1.3rem; margin-bottom: 1rem;
+    font-size: .95rem; font-style: italic; font-weight: 500;
+    box-shadow: 0 4px 18px rgba(0,0,0,.12); position: relative; overflow: hidden;
+  }
+  .quote-box::before { content: '\201C'; font-size: 5rem; position: absolute; top: -1.2rem; left: .3rem; opacity: .2; font-family: Georgia,serif; }
   .quote-box .q-text { position: relative; }
   .quote-box .q-src  { display: block; font-style: normal; font-size: .78rem; opacity: .75; margin-top: .3rem; }
 
   /* ── TABS ── */
-  .tab-bar {
-    display: flex;
-    gap: .4rem;
-    overflow-x: auto;
-    padding-bottom: .3rem;
-    margin-bottom: 1rem;
-    scrollbar-width: none;
-  }
+  .tab-bar { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .3rem; margin-bottom: 1rem; scrollbar-width: none; }
   .tab-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
-    flex-shrink: 0;
-    padding: .5rem 1rem;
-    border: 1.5px solid var(--P, #d97706);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--P);
-    font-size: .85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .2s;
-    white-space: nowrap;
+    flex-shrink: 0; padding: .5rem 1rem;
+    border: 1.5px solid var(--P); border-radius: 999px;
+    background: transparent; color: var(--P);
+    font-size: .85rem; font-weight: 600; cursor: pointer; transition: all .2s; white-space: nowrap;
   }
-  .tab-btn.active,
-  .tab-btn:hover { background: var(--P); color: #fff; }
+  .tab-btn.active, .tab-btn:hover { background: var(--P); color: #fff; }
 
-  /* ── CONTENT PANELS ── */
   .panel { display: block; max-height: 0; overflow: hidden; opacity: 0; pointer-events: none; }
   .panel.active { max-height: 9999px; opacity: 1; pointer-events: auto; }
-
-  .content-card {
-    background: var(--card);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius);
-    padding: 1.3rem;
-    box-shadow: 0 3px 18px rgba(0,0,0,.08);
-  }
+  .content-card { background: var(--card); backdrop-filter: blur(10px); border-radius: var(--radius); padding: 1.3rem; box-shadow: 0 3px 18px rgba(0,0,0,.08); }
 
   /* Music */
   .music-artist { font-size: .78rem; opacity: .6; margin-bottom: .2rem; }
@@ -195,16 +161,7 @@
 
   /* Poem */
   .poem-author { font-size: .82rem; opacity: .6; margin-bottom: .6rem; }
-  .poem-body {
-    white-space: pre-line;
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', serif;
-    font-size: .95rem;
-    line-height: 2.1;
-    padding: .9rem 1rem;
-    background: rgba(0,0,0,.04);
-    border-radius: 10px;
-    border-left: 4px solid var(--P, #d97706);
-  }
+  .poem-body { white-space: pre-line; font-family: 'Malgun Gothic','Apple SD Gothic Neo',serif; font-size: .95rem; line-height: 2.1; padding: .9rem 1rem; background: rgba(0,0,0,.04); border-radius: 10px; border-left: 4px solid var(--P); }
 
   /* Art */
   .art-img   { width: 100%; border-radius: 12px; margin-bottom: .7rem; display: block; }
@@ -213,7 +170,7 @@
   .art-desc  { font-size: .87rem; margin-top: .45rem; line-height: 1.6; }
 
   /* Places */
-  .place-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .7rem; }
+  .place-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: .7rem; }
   .place-item { background: rgba(0,0,0,.05); border-radius: 12px; padding: .8rem; }
   .place-icon { font-size: 1.5rem; margin-bottom: .25rem; }
   .place-name { font-weight: 700; font-size: .9rem; }
@@ -227,45 +184,29 @@
   .book-reason { font-size: .85rem; margin-top: .2rem; }
 
   /* Activities */
-  .job-sel {
-    width: 100%; padding: .5rem; border: 1.5px solid var(--P);
-    border-radius: 8px; background: var(--card); color: var(--T);
-    font-size: .9rem; margin-bottom: .8rem; cursor: pointer;
-  }
+  .job-sel { width: 100%; padding: .5rem; border: 1.5px solid var(--P); border-radius: 8px; background: var(--card); color: var(--T); font-size: .9rem; margin-bottom: .8rem; cursor: pointer; }
   .act-list { list-style: none; }
-  .act-list li {
-    padding: .55rem .5rem; border-bottom: 1px solid rgba(0,0,0,.06);
-    font-size: .9rem; display: flex; gap: .5rem; align-items: flex-start;
-  }
+  .act-list li { padding: .55rem .5rem; border-bottom: 1px solid rgba(0,0,0,.06); font-size: .9rem; display: flex; gap: .5rem; align-items: flex-start; }
   .act-list li::before { content: '🌟'; flex-shrink: 0; }
   .act-list li:last-child { border-bottom: none; }
 
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 2rem 1rem;
-    font-size: .78rem;
-    opacity: .45;
-  }
+  footer { text-align: center; padding: 2rem 1rem; font-size: .78rem; opacity: .45; }
 </style>
 </head>
 <body class="clear">
 
-<!-- Header -->
 <div class="site-header">
-  <div class="site-logo">☀️ 행복한 하루</div>
-  <div class="site-sub">날씨와 함께하는 나만의 하루 가이드</div>
-  <div style="text-align:center;margin-bottom:.6rem">
-    <a href="monthly.html" style="display:inline-block;padding:.32rem .9rem;background:var(--card);border-radius:999px;color:var(--P);text-decoration:none;font-size:.82rem;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.08)">📅 16일 예보</a>
-  </div>
+  <div class="site-logo">📅 행복한 하루 — 예보</div>
+  <div class="site-sub">앞으로 16일, 날씨별 맞춤 추천</div>
   <div class="date-box">
-    <span class="greeting" id="greeting">좋은 아침입니다</span>
-    <span class="date"     id="today-date">-</span>
-    <span class="clock"    id="clock">--:--</span>
+    <span class="today-label">오늘</span>
+    <span class="today-date" id="today-date">-</span>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">🌤 오늘 날씨</a>
   </div>
 </div>
 
-<!-- Location bar -->
 <div class="loc-bar">
   <button class="loc-btn" onclick="getGeo()">📍 내 위치</button>
   <input type="text" id="city-input" placeholder="도시 이름 (예: 서울)"
@@ -277,27 +218,33 @@
   <div id="loading">📡 날씨를 불러오는 중...</div>
   <div id="err-box" style="display:none"></div>
 
-  <!-- Weather banner -->
-  <div id="w-banner" class="w-banner" style="display:none">
-    <div class="w-big"  id="w-emoji">☀️</div>
+  <!-- 16일 예보 그리드 -->
+  <div id="forecast-section" class="forecast-section" style="display:none">
+    <div class="section-title">📅 16일 날씨 예보 — 날짜를 클릭하면 추천이 바뀝니다</div>
+    <div id="forecast-grid" class="forecast-grid"></div>
+  </div>
+
+  <!-- 선택된 날 배너 -->
+  <div id="sel-banner" class="sel-banner" style="display:none">
+    <div class="sel-big" id="sel-emoji">☀️</div>
     <div>
-      <div class="w-loc"  id="w-loc">-</div>
-      <div class="w-temp" id="w-temp">--°C</div>
-      <div class="w-cond" id="w-cond">-</div>
-      <div class="w-meta">
-        <span id="w-hum">💧 -</span>
-        <span id="w-wind">💨 -</span>
+      <div class="sel-date" id="sel-date">-</div>
+      <div class="sel-temp" id="sel-temp">--°</div>
+      <div class="sel-cond" id="sel-cond">-</div>
+      <div class="sel-meta">
+        <span id="sel-rain">💧 -</span>
+        <span id="sel-wind">💨 -</span>
       </div>
     </div>
   </div>
 
-  <!-- Quote -->
+  <!-- 명언 -->
   <div id="quote-box" class="quote-box" style="display:none">
     <div class="q-text" id="q-text">-</div>
     <span class="q-src"  id="q-src"></span>
   </div>
 
-  <!-- Tabs -->
+  <!-- 탭 -->
   <div id="tab-bar" class="tab-bar" style="display:none">
     <button class="tab-btn active" onclick="showTab('music')">🎵 음악</button>
     <button class="tab-btn"        onclick="showTab('poem')">📜 시</button>
@@ -307,7 +254,6 @@
     <button class="tab-btn"        onclick="showTab('act')">💼 활동</button>
   </div>
 
-  <!-- Panels -->
   <div id="panel-music"  class="panel active  content-card"></div>
   <div id="panel-poem"   class="panel         content-card"></div>
   <div id="panel-art"    class="panel         content-card"></div>
@@ -320,10 +266,10 @@
 
 <script>
 // ══════════════════════════════════════════
-//  DAILY PICK — 오늘 날짜 기준으로 배열에서 하나 선택
+//  날짜별 pick — 해당 날짜의 연중 몇 번째 날인지 기준
 // ══════════════════════════════════════════
-function pick(arr){
-  const d = new Date();
+function pickForDate(arr, dateStr) {
+  const d   = new Date(dateStr + 'T00:00:00');
   const day = Math.floor((d - new Date(d.getFullYear(), 0, 1)) / 86400000);
   return arr[day % arr.length];
 }
@@ -348,92 +294,69 @@ const QUOTES = [
   {t:'삶이란 자전거 타기와 같다. 균형을 잡으려면 계속 움직여야 한다.', s:'— 알베르트 아인슈타인'},
   {t:'나는 실패한 적이 없다. 단지 작동하지 않는 방법을 만 가지 찾아냈을 뿐이다.', s:'— 토머스 에디슨'},
   {t:'사람은 목표가 있을 때 어디서나 행복할 수 있다.', s:'— 도스토예프스키'},
-  {t:'오늘의 나는 내일의 나를 위한 최선의 투자다.', s:'— 익명'},
   {t:'두려움이 있는 곳에 성장이 있다.', s:'— 익명'},
   {t:'완벽함은 행동의 적이다.', s:'— 볼테르'},
-  {t:'자신을 믿어라. 당신이 할 수 있는 것보다 더 많은 것을 할 수 있다.', s:'— 익명'},
   {t:'기회는 준비된 사람에게 찾아온다.', s:'— 루이 파스퇴르'},
-  {t:'배움에는 끝이 없다.', s:'— 익명'},
-  {t:'지식은 힘이다.', s:'— 프랜시스 베이컨'},
   {t:'단순하게 살수록 풍요로워진다.', s:'— 헨리 데이비드 소로'},
   {t:'오늘 심은 씨앗이 내일의 나무가 된다.', s:'— 중국 속담'},
   {t:'가장 용감한 행동은 스스로 생각하고 큰 소리로 말하는 것이다.', s:'— 코코 샤넬'},
-  {t:'당신이 포기하지 않는 한 실패는 없다.', s:'— 익명'},
   {t:'친절함은 무료다. 아낌없이 뿌려라.', s:'— 익명'},
   {t:'행복은 목적지가 아니라 여행의 방식이다.', s:'— 마가렛 리 런벡'},
   {t:'모든 위대한 여정은 첫 걸음에서 시작된다.', s:'— 노자'},
   {t:'실수를 한 번도 안 한 사람은 새로운 것을 시도한 적이 없는 사람이다.', s:'— 아인슈타인'},
   {t:'비교는 기쁨의 도둑이다.', s:'— 시어도어 루스벨트'},
   {t:'지금 힘든 이유는, 지금 성장하고 있기 때문이다.', s:'— 익명'},
-  {t:'좋은 판단은 경험에서 오고, 경험은 나쁜 판단에서 온다.', s:'— 윌 로저스'},
   {t:'웃음은 마음의 언어다.', s:'— 익명'},
   {t:'작은 행동이 큰 변화를 만든다.', s:'— 익명'},
-  {t:'타인에게 친절하면 자신에게도 친절해진다.', s:'— 익명'},
   {t:'당신이 원하는 변화가 있다면 스스로 그 변화가 되어라.', s:'— 마하트마 간디'},
   {t:'인생은 가까이서 보면 비극이지만 멀리서 보면 희극이다.', s:'— 찰리 채플린'},
-  {t:'가장 빠른 길은 아는 사람에게 물어보는 것이다.', s:'— 한국 속담'},
   {t:'독서는 마음의 양식이다.', s:'— 익명'},
   {t:'남을 용서하는 것은 자신을 자유롭게 하는 것이다.', s:'— 익명'},
   {t:'미래는 자신의 꿈의 아름다움을 믿는 사람들에게 속한다.', s:'— 엘리너 루스벨트'},
   {t:'세상을 바꾸고 싶으면 먼저 자신을 바꿔라.', s:'— 소크라테스'},
-  {t:'지금 이 자리에서 최선을 다하라.', s:'— 익명'},
   {t:'당신의 태도가 당신의 방향을 결정한다.', s:'— 익명'},
   {t:'매일 조금씩 더 나아지는 것이 목표다.', s:'— 익명'},
   {t:'조용히 흐르는 물이 깊다.', s:'— 한국 속담'},
   {t:'열 번 찍어 안 넘어가는 나무 없다.', s:'— 한국 속담'},
-  {t:'고통 없이 얻는 것은 없다.', s:'— 벤저민 프랭클린'},
   {t:'어제의 나보다 오늘의 내가 더 나은 사람이면 충분하다.', s:'— 익명'},
   {t:'모든 꽃은 한때 씨앗이었다.', s:'— 익명'},
   {t:'삶에서 가장 중요한 것은 지금 이 순간 무엇을 하느냐다.', s:'— 레프 톨스토이'},
   {t:'당신이 가진 것에 감사하라. 그러면 더 많은 것을 갖게 될 것이다.', s:'— 오프라 윈프리'},
-  {t:'잘 자는 것이 최선의 약이다.', s:'— 미겔 데 세르반테스'},
   {t:'두 번 생각하고 한 번 말하라.', s:'— 한국 속담'},
   {t:'사랑은 행동이지 말이 아니다.', s:'— 익명'},
   {t:'모든 어려움에는 기회가 숨어 있다.', s:'— 알베르트 아인슈타인'},
-  {t:'남들이 어떻게 생각하느냐보다 내가 어떻게 사느냐가 중요하다.', s:'— 익명'},
   {t:'잠들기 전에 오늘에 감사하라.', s:'— 익명'},
-  {t:'성공한 사람들의 공통점은 포기하지 않았다는 것이다.', s:'— 익명'},
   {t:'한 번도 실수하지 않는 사람은 한 번도 도전하지 않은 사람이다.', s:'— 익명'},
   {t:'지금 이 순간, 당신은 충분하다.', s:'— 익명'},
   {t:'길이 없으면 길을 만들면 된다.', s:'— 익명'},
   {t:'건강이 가장 큰 재산이다.', s:'— 버질'},
-  {t:'가정의 행복은 모든 야망의 끝이다.', s:'— 조셉 애디슨'},
-  {t:'가장 행복한 사람은 가장 많이 베푸는 사람이다.', s:'— H. 아담스'},
   {t:'매 순간이 새로운 시작이다.', s:'— T.S. 엘리엇'},
   {t:'자신을 이기는 자가 가장 강한 자다.', s:'— 노자'},
-  {t:'아는 것이 힘이다. 하지만 아는 것을 실천하는 것이 더 큰 힘이다.', s:'— 익명'},
   {t:'사람을 얻는 것이 세상을 얻는 것이다.', s:'— 한국 속담'},
   {t:'오늘 웃지 않은 날은 낭비한 날이다.', s:'— 찰리 채플린'},
   {t:'진정한 지식은 자신이 얼마나 모르는지 아는 것이다.', s:'— 소크라테스'},
   {t:'모든 것은 마음먹기에 달렸다.', s:'— 원효대사'},
-  {t:'시간은 모든 상처를 치료한다.', s:'— 익명'},
   {t:'인생은 짧고 예술은 길다.', s:'— 히포크라테스'},
   {t:'좋은 친구 하나가 책 천 권보다 낫다.', s:'— 익명'},
   {t:'자신의 한계를 알되, 그 한계에 갇히지 마라.', s:'— 익명'},
   {t:'겸손한 자는 항상 배울 것이 있다.', s:'— 익명'},
   {t:'봄이 오기 위해 겨울이 필요하다.', s:'— 익명'},
   {t:'오늘의 고통은 내일의 지혜다.', s:'— 익명'},
-  {t:'타인의 눈이 아닌 자신의 눈으로 세상을 바라보라.', s:'— 익명'},
   {t:'하루하루가 선물이다.', s:'— 익명'},
-  {t:'씨앗을 심지 않으면 열매를 기대할 수 없다.', s:'— 익명'},
   {t:'나는 내 삶의 주인공이다.', s:'— 익명'},
   {t:'긍정적인 생각은 긍정적인 삶을 만든다.', s:'— 익명'},
   {t:'지금 당장 완벽하지 않아도 된다. 그냥 시작하라.', s:'— 익명'},
-  {t:'가장 큰 용기는 자기 자신에게 솔직한 것이다.', s:'— 익명'},
   {t:'꾸준함이 재능을 이긴다.', s:'— 익명'},
-  {t:'내가 서 있는 곳에서 최선을 다하는 것이 여행의 시작이다.', s:'— 익명'},
   {t:'모든 날은 새로운 가능성을 품고 있다.', s:'— 익명'},
-  {t:'다름을 인정할 때 진정한 이해가 시작된다.', s:'— 익명'},
   {t:'작은 것에 감사할 줄 아는 사람이 크게 받는다.', s:'— 익명'},
   {t:'오늘 잘 살면 내일은 저절로 좋아진다.', s:'— 익명'},
   {t:'고요한 마음이 가장 강한 마음이다.', s:'— 익명'},
-  {t:'말보다 행동이 먼저다.', s:'— 익명'},
   {t:'지금 여기, 이 순간을 사랑하라.', s:'— 익명'},
   {t:'당신의 이야기는 아직 끝나지 않았다.', s:'— 익명'},
 ];
 
 // ══════════════════════════════════════════
-//  CONTENT DB  (musics / poems / arts / quotes — 3개씩, 매일 교체)
+//  CONTENT DB
 // ══════════════════════════════════════════
 const DB = {
   clear:{
@@ -687,104 +610,179 @@ const DB = {
 };
 
 // ══════════════════════════════════════════
-//  HELPERS
+//  STATE & HELPERS
 // ══════════════════════════════════════════
-let cur = 'clear';
 const $ = id => document.getElementById(id);
+const WEEKDAYS = ['일','월','화','수','목','금','토'];
+let forecast = null;
+let curCond  = 'clear';
 
-function getCondition(c){
-  if(c<=1)return 'clear';if(c===2)return 'partlyCloudy';if(c===3)return 'cloudy';
-  if(c===45||c===48)return 'foggy';if(c>=51&&c<=57)return 'drizzle';
-  if([61,63,65,80,81,82].includes(c))return 'rainy';
-  if([71,73,75,85,86,77].includes(c))return 'snowy';if(c>=95)return 'thunderstorm';
+function getCondition(c) {
+  if(c<=1) return 'clear'; if(c===2) return 'partlyCloudy'; if(c===3) return 'cloudy';
+  if(c===45||c===48) return 'foggy'; if(c>=51&&c<=57) return 'drizzle';
+  if([61,63,65,80,81,82].includes(c)) return 'rainy';
+  if([71,73,75,85,86,77].includes(c)) return 'snowy';
+  if(c>=95) return 'thunderstorm';
   return 'partlyCloudy';
 }
 
-function getGreeting(){
-  const h=new Date().getHours();
-  if(h<6)return '새벽에도 빛나는 하루';if(h<12)return '좋은 아침입니다 ☀️';
-  if(h<14)return '맛있는 점심 드셨나요? 😊';if(h<18)return '좋은 오후입니다 🌤';
-  if(h<21)return '좋은 저녁입니다 🌙';return '오늘도 수고하셨습니다 ✨';
+function todayStr() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`;
 }
 
-function updateClock(){
-  const n=new Date();
-  const days=['일','월','화','수','목','금','토'];
-  $('today-date').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${days[n.getDay()]}요일`;
-  $('clock').textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
-  $('greeting').textContent=getGreeting();
+function initHeader() {
+  const n = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  $('today-date').textContent = `${n.getFullYear()}년 ${n.getMonth()+1}월 ${n.getDate()}일 ${days[n.getDay()]}요일`;
 }
 
 // ══════════════════════════════════════════
 //  FETCH
 // ══════════════════════════════════════════
-async function fetchWeather(lat,lon){
-  const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto&wind_speed_unit=kmh`);
-  return (await r.json()).current;
+async function fetchForecast(lat, lon) {
+  const r = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max` +
+    `&timezone=auto&forecast_days=16`
+  );
+  return (await r.json()).daily;
 }
-async function reverseGeo(lat,lon){
-  try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ko`);const j=await r.json();return j.address?.city||j.address?.county||j.address?.state||'현재 위치';}
-  catch{return '현재 위치';}
+
+async function reverseGeo(lat, lon) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=ko`);
+    const j = await r.json();
+    return j.address?.city || j.address?.county || j.address?.state || '현재 위치';
+  } catch { return '현재 위치'; }
 }
 
 // ══════════════════════════════════════════
 //  ENTRY POINTS
 // ══════════════════════════════════════════
-function getGeo(){
-  if(!navigator.geolocation){showErr('위치 서비스를 지원하지 않는 브라우저입니다.');return;}
+function getGeo() {
+  if(!navigator.geolocation) { showErr('위치 서비스를 지원하지 않는 브라우저입니다.'); return; }
   showLoading();
   navigator.geolocation.getCurrentPosition(
-    async p=>{const city=await reverseGeo(p.coords.latitude,p.coords.longitude);await load(p.coords.latitude,p.coords.longitude,city);},
-    ()=>load(37.5665,126.9780,'서울')
+    async p => {
+      const city = await reverseGeo(p.coords.latitude, p.coords.longitude);
+      await load(p.coords.latitude, p.coords.longitude, city);
+    },
+    () => load(37.5665, 126.9780, '서울')
   );
 }
-async function searchCity(){
-  const city=$('city-input').value.trim();if(!city)return;showLoading();
-  try{
-    const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ko&format=json`);
-    const j=await r.json();if(!j.results?.length)throw new Error('도시를 찾을 수 없습니다.');
-    const{latitude,longitude,name}=j.results[0];await load(latitude,longitude,name);
-  }catch(e){showErr(e.message);}
+
+async function searchCity() {
+  const city = $('city-input').value.trim();
+  if(!city) return;
+  showLoading();
+  try {
+    const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ko&format=json`);
+    const j = await r.json();
+    if(!j.results?.length) throw new Error('도시를 찾을 수 없습니다.');
+    const { latitude, longitude, name } = j.results[0];
+    await load(latitude, longitude, name);
+  } catch(e) { showErr(e.message); }
 }
-async function load(lat,lon,city){
-  try{
-    showLoading();const w=await fetchWeather(lat,lon);cur=getCondition(w.weather_code);
-    renderWeather(w,city);renderAll();
-  }catch(e){showErr('날씨를 불러오지 못했습니다: '+e.message);}
+
+async function load(lat, lon, city) {
+  try {
+    showLoading();
+    forecast = await fetchForecast(lat, lon);
+    renderCalendar(city);
+    selectDay(0);
+  } catch(e) { showErr('날씨를 불러오지 못했습니다: ' + e.message); }
 }
 
 // ══════════════════════════════════════════
-//  RENDER
+//  RENDER CALENDAR
 // ══════════════════════════════════════════
-function renderWeather(w,city){
-  const d=DB[cur];document.body.className=d.cls;
-  $('loading').style.display='none';$('err-box').style.display='none';
-  $('w-emoji').textContent=d.emoji;$('w-loc').textContent='📍 '+city;
-  $('w-temp').textContent=Math.round(w.temperature_2m)+'°C';
-  $('w-cond').textContent=d.name;
-  $('w-hum').textContent='💧 '+w.relative_humidity_2m+'%';
-  $('w-wind').textContent='💨 '+Math.round(w.wind_speed_10m)+'km/h';
-  $('w-banner').style.display='flex';
+function renderCalendar(city) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'block';
+
+  const today = todayStr();
+  $('forecast-grid').innerHTML = forecast.time.map((dateStr, idx) => {
+    const d    = new Date(dateStr + 'T00:00:00');
+    const cond = getCondition(forecast.weather_code[idx]);
+    const emoji = DB[cond].emoji;
+    const tmax  = Math.round(forecast.temperature_2m_max[idx]);
+    const tmin  = Math.round(forecast.temperature_2m_min[idx]);
+    const rain  = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+    const isToday = dateStr === today;
+
+    return `<div class="day-card${isToday ? ' today-card' : ''}"
+              onclick="selectDay(${idx})" id="day-card-${idx}">
+      <div class="day-wd">${isToday ? '오늘' : WEEKDAYS[d.getDay()]}</div>
+      <div class="day-dt">${d.getMonth()+1}/${d.getDate()}</div>
+      <span class="day-ico">${emoji}</span>
+      <div class="day-tmax">${tmax}°</div>
+      <div class="day-tmin">${tmin}°</div>
+      ${rain > 0.5 ? `<div class="day-rain">💧${rain}mm</div>` : ''}
+    </div>`;
+  }).join('');
 }
 
-function renderAll(){
-  const d = DB[cur];
-  const isFirst = new Date().getDate() === 1;
-  const quote = isFirst ? pick(d.quotes) : pick(QUOTES);
-  const music = pick(d.musics);
-  const poem  = pick(d.poems);
-  const art   = pick(d.arts);
+// ══════════════════════════════════════════
+//  SELECT DAY
+// ══════════════════════════════════════════
+function selectDay(idx) {
+  document.querySelectorAll('.day-card').forEach(c => c.classList.remove('sel'));
+  const card = $('day-card-' + idx);
+  if(card) {
+    card.classList.add('sel');
+    // 선택 카드가 화면 안에 오도록 스크롤
+    card.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  }
 
-  // Quote
-  $('q-text').textContent = quote.t;
-  $('q-src').textContent  = (quote.s && !quote.s.includes('익명')) ? quote.s : '';
+  const dateStr = forecast.time[idx];
+  curCond = getCondition(forecast.weather_code[idx]);
+  const d = DB[curCond];
+
+  // 테마 변경
+  document.body.className = d.cls;
+
+  // 선택일 배너
+  const date    = new Date(dateStr + 'T00:00:00');
+  const today   = todayStr();
+  const isToday = dateStr === today;
+  const label   = isToday
+    ? `오늘 — ${date.getMonth()+1}월 ${date.getDate()}일`
+    : `${WEEKDAYS[date.getDay()]}요일, ${date.getMonth()+1}월 ${date.getDate()}일`;
+
+  $('sel-emoji').textContent = d.emoji;
+  $('sel-date').textContent  = '📅 ' + label;
+  $('sel-temp').textContent  = `최고 ${Math.round(forecast.temperature_2m_max[idx])}° / 최저 ${Math.round(forecast.temperature_2m_min[idx])}°`;
+  $('sel-cond').textContent  = d.name;
+  const rain = Math.round(forecast.precipitation_sum[idx] * 10) / 10;
+  $('sel-rain').textContent  = `💧 ${rain > 0 ? rain + 'mm' : '강수 없음'}`;
+  $('sel-wind').textContent  = `💨 ${Math.round(forecast.wind_speed_10m_max[idx])}km/h`;
+  $('sel-banner').style.display = 'flex';
+
+  // 콘텐츠 렌더
+  renderContent(curCond, dateStr);
+
   $('quote-box').style.display   = 'block';
   $('quote-box').style.background = 'var(--P)';
-
-  // Tab bar
   $('tab-bar').style.display = 'flex';
+  showTab('music');
+}
 
-  // Music
+// ══════════════════════════════════════════
+//  RENDER CONTENT (날짜 기반 pick)
+// ══════════════════════════════════════════
+function renderContent(cond, dateStr) {
+  const d     = DB[cond];
+  const isFirst = new Date(dateStr + 'T00:00:00').getDate() === 1;
+  const quote = isFirst ? pickForDate(d.quotes, dateStr) : pickForDate(QUOTES, dateStr);
+  const music = pickForDate(d.musics, dateStr);
+  const poem  = pickForDate(d.poems,  dateStr);
+  const art   = pickForDate(d.arts,   dateStr);
+
+  $('q-text').textContent = quote.t;
+  $('q-src').textContent  = (quote.s && !quote.s.includes('익명')) ? quote.s : '';
+
   $('panel-music').innerHTML = `
     <div class="music-artist">${music.artist}</div>
     <div class="music-title">${music.title}</div>
@@ -796,19 +794,14 @@ function renderAll(){
       <div class="yt-play-btn"></div>
     </a>`;
 
-  // Poem
   $('panel-poem').innerHTML = `<div class="poem-author">${poem.title} — ${poem.author}</div><div class="poem-body">${poem.text}</div><div style="margin:1.5rem 0 1rem;border-top:1px solid rgba(0,0,0,.12)"></div><img class="art-img" src="${art.img}" alt="${art.title}" onerror="this.style.display='none'" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
-  // Art
   $('panel-art').innerHTML = `<img class="art-img" src="${art.img}" alt="${art.title}" onerror="artErr(this)" style="min-height:60px;background:rgba(0,0,0,.05)"><div class="art-title">${art.title}</div><div class="art-info">${art.info}</div><div class="art-desc">${art.desc}</div>`;
 
-  // Places
   $('panel-places').innerHTML = `<div class="place-grid">${d.places.map(p=>`<a class="place-item" href="https://www.google.com/maps/search/${encodeURIComponent(p.n.split('·')[0].trim())}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;"><div class="place-icon">${p.i}</div><div class="place-name">${p.n} <span style="font-size:.7rem;opacity:.5">↗</span></div><div class="place-desc">${p.d}</div></a>`).join('')}</div>`;
 
-  // Books
   $('panel-books').innerHTML = d.books.map(b=>`<div class="book-item"><div class="book-title">📖 ${b.t}</div><div class="book-author">${b.a}</div><div class="book-reason">${b.r}</div></div>`).join('');
 
-  // Activities
   $('panel-act').innerHTML = `
     <select class="job-sel" id="job-sel" onchange="renderAct()">
       <option value="student">🎓 학생</option>
@@ -820,9 +813,12 @@ function renderAll(){
     </select>
     <ul id="act-list" class="act-list"></ul>`;
   renderAct();
+}
 
-  // Show first tab
-  showTab('music');
+function renderAct() {
+  const job  = ($('job-sel') || {}).value || 'student';
+  const acts = DB[curCond]?.jobs[job] || [];
+  $('act-list').innerHTML = acts.map(a => `<li>${a}</li>`).join('');
 }
 
 function loadYT(el, id){
@@ -838,7 +834,6 @@ function artErr(el) {
     '</svg>'
   );
 }
-
 function musicErr(el, id) {
   if (el.src.indexOf('hqdefault') > -1) {
     el.src = 'https://img.youtube.com/vi/' + id + '/mqdefault.jpg';
@@ -853,37 +848,37 @@ function musicErr(el, id) {
   }
 }
 
-function renderAct(){
-  const job=($('job-sel')||{}).value||'student';
-  const acts=DB[cur]?.jobs[job]||[];
-  $('act-list').innerHTML=acts.map(a=>`<li>${a}</li>`).join('');
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['music','poem','art','places','books','act'];
+    b.classList.toggle('active', tabs[i] === name);
+  });
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.toggle('active', t === name);
+  });
 }
 
-function showTab(name){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
-    const tabs=['music','poem','art','places','books','act'];
-    b.classList.toggle('active',tabs[i]===name);
+function showLoading() {
+  $('loading').style.display = 'block';
+  $('err-box').style.display = 'none';
+  $('forecast-section').style.display = 'none';
+  $('sel-banner').style.display = 'none';
+  $('quote-box').style.display  = 'none';
+  $('tab-bar').style.display    = 'none';
+  ['music','poem','art','places','books','act'].forEach(t => {
+    $('panel-' + t).classList.remove('active');
   });
-  ['music','poem','art','places','books','act'].forEach(t=>{
-    $('panel-'+t).classList.toggle('active',t===name);
-  });
-  // art 탭 열릴 때 이미지 로드 (display:none → block 후 src 설정)
 }
 
-// ── Loading / Error ───────────────────────
-function showLoading(){
-  $('loading').style.display='block';$('err-box').style.display='none';
-  $('w-banner').style.display='none';$('quote-box').style.display='none';$('tab-bar').style.display='none';
-  ['music','poem','art','places','books','act'].forEach(t=>{$('panel-'+t).classList.remove('active');});
-}
-function showErr(msg){
-  $('loading').style.display='none';$('err-box').style.display='block';
-  $('err-box').innerHTML=`<p>⚠️ ${msg}</p><button class="err-btn" onclick="load(37.5665,126.9780,'서울')">서울 날씨로 보기</button>`;
+function showErr(msg) {
+  $('loading').style.display = 'none';
+  $('err-box').style.display = 'block';
+  $('err-box').innerHTML = `<p>⚠️ ${msg}</p><button class="err-btn" onclick="load(37.5665,126.9780,'서울')">서울 날씨로 보기</button>`;
 }
 
 // ── Init ─────────────────────────────────
-updateClock();setInterval(updateClock,30000);
-window.addEventListener('load',getGeo);
+initHeader();
+window.addEventListener('load', getGeo);
 </script>
 </body>
 </html>
