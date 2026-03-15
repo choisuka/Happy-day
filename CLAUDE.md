@@ -27,6 +27,17 @@ C:\Users\USER\happy_day\
 - **테마**: `document.body.className = condition` → CSS 변수로 색상 자동 변경
 - **탭 전환**: `showTab(name)` — `.panel.active` 클래스 토글
 
+## 명언(quote) 선택 로직
+- **평소**: `QUOTES` 배열(100개 범용 명언)에서 day-of-year % 100으로 선택
+- **매월 1일만**: 날씨에 맞는 DB 명언(`d.quotes`) 사용
+- `QUOTES` 배열은 `pick()` / `pickForDate()` 함수 바로 아래에 정의
+- index.html: `const isFirst = new Date().getDate() === 1;`
+- monthly.html: `const isFirst = new Date(dateStr + 'T00:00:00').getDate() === 1;`
+
+## 장소(places) — Google Maps 연결
+- 장소 카드는 `<a>` 태그로 감싸져 클릭 시 Google Maps 검색으로 이동
+- `p.n.split('·')[0].trim()` — 첫 번째 장소명으로 검색 (`https://www.google.com/maps/search/...`)
+
 ## 개발 환경
 - 별도 빌드 없음. HTML 파일을 브라우저로 열면 바로 동작
 - 위치 정보: `navigator.geolocation` → Open-Meteo API 호출
