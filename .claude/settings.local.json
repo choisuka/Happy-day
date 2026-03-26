@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/800px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -H \"Referer: https://choisuka.github.io/\" \"https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/800px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" -A \"Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36\" \"https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/800px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg\")",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:api.open-meteo.com)",
+      "Bash(python fix_art_urls.py)",
+      "Bash(python revert_art_urls.py)",
+      "Bash(python -c \":*)",
+      "Bash(python fix_gap_images.py)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\USER"
+    ]
+  }
+}
